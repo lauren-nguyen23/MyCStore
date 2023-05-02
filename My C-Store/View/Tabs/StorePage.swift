@@ -5,8 +5,6 @@ struct StorePage: View {
     var animation: Namespace.ID
     
     @EnvironmentObject var sharedData: SharedDataModel
-    //TODO: Undo changes here to revert to StoreViewModel
-    //@StateObject var storeData: StoreViewModel = StoreViewModel()
     @State var txt = ""
     
     let layout = [
@@ -29,7 +27,6 @@ struct StorePage: View {
                     
                     //Search bar
                         ZStack {
-                            //Undo changes here
                             if sharedData.searchActivated {
                                 SearchBar()
                             } else {
@@ -41,7 +38,6 @@ struct StorePage: View {
                         .contentShape(Rectangle())
                         .onTapGesture {
                             withAnimation(.easeInOut) {
-                                //Undo changes here
                                 sharedData.searchActivated = true
                             }
                         }
@@ -69,7 +65,6 @@ struct StorePage: View {
                         ScrollView(.vertical, showsIndicators: false) {
                             
                             LazyVGrid(columns: layout){
-                                //Undo changes here
                                 ForEach(sharedData.products){ product in
                                     //Product Tile View
                                     ProductTileView(product: product)
@@ -85,10 +80,8 @@ struct StorePage: View {
                     .padding(.vertical, 10)
                     .overlay(
                         ZStack {
-                            //Undo changes here
                             if sharedData.searchActivated {
                                 SearchView(animation: animation)
-                                //Undo changes here
                                     .environmentObject(sharedData)
                             }
                         }

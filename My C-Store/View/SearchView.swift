@@ -4,7 +4,6 @@ struct SearchView: View {
     
     var animation: Namespace.ID
     
-    //Undo changes here
     @EnvironmentObject var sharedData: SharedDataModel
     
     //Activating Text Field
@@ -18,10 +17,8 @@ struct SearchView: View {
                 //Close button
                 Button {
                     withAnimation{
-                        //Undo changes here
                         sharedData.searchActivated = false
                     }
-                    //Undo changes here
                     sharedData.searchText = ""
                 } label: {
                     Image(systemName: "arrow.left")
@@ -36,7 +33,6 @@ struct SearchView: View {
                         .padding()
                         
                         TextField("Search", text:
-                                    //Undo changes here
                                   $sharedData.searchText)
                             .focused($startIF)
                             .textCase(.lowercase)
@@ -54,7 +50,6 @@ struct SearchView: View {
             }
             
             //showing progress if searching, else showing no results found if empty
-            //Undo changes here
             if let products = sharedData.searchedProducts{
                 if products.isEmpty {
                     //No Results Found Text
@@ -85,7 +80,6 @@ struct SearchView: View {
                 
                 ProgressView()
                     .padding(.top, 30)
-                //Undo changes here
                     .opacity(sharedData.searchText == "" ? 0 : 1)
             }
 
@@ -130,9 +124,7 @@ struct SearchView: View {
         //TODO: when tapped, show the ProductDetailPage
         .onTapGesture {
             withAnimation(.easeInOut) {
-                //Undo changes here
                 sharedData.detailProduct = product
-                //Undo changes here
                 sharedData.showDetailProduct = true
             }
         }

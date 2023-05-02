@@ -115,7 +115,6 @@ struct CartPage: View {
                             if (sharedData.cartProducts[index].quantity == 1) {
                                 //sharedData.cartProducts.remove(at: index)
                                 withAnimation{
-                                    //removing
                                     sharedData.cartProducts.remove(at: index)
                                 }
                             } else {
@@ -175,7 +174,6 @@ struct CartPage: View {
             return product.id == currentProduct.id
         }){
             let _ = withAnimation{
-                //removing
                 sharedData.cartProducts.remove(at: index)
             }
         }

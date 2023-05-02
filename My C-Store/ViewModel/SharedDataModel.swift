@@ -9,20 +9,16 @@ class SharedDataModel: ObservableObject {
     //matched with search string
     @Published var searchMatch: Bool = false
     
+    //for Wishlist Page
+    
     //Wishlist products
-    @Published var favProducts: [Product] = [
-//        Product(name: "Caesar chicken wrap", price: 6.50", image: "chicken_wrap"),
-//        Product(name: "Pringles", price: "$3.75", image: "pringles"),
-//        Product(name: "Oatly milk", price: "$8.00", image: "oatly_milk")
-    ]
+    @Published var favProducts: [Product] = []
+    
+    //for Cart Page
     
     //Cart products
-    @Published var cartTotal: Double = 0.0
-    @Published var cartProducts: [Product] = [
-//        Product(name: "Caesar chicken wrap", price: 6.50, image: "chicken_wrap", quantity: 1),
-//        Product(name: "Pringles", price: 3.75, image: "pringles",  quantity: 3),
-//        Product(name: "Oatly milk", price: 8.00, image: "oatly_milk", quantity: 1)
-    ]
+    @Published var cartTotal: Double = 0.00
+    @Published var cartProducts: [Product] = []
     
     //Calculate total price
     func getTotal() -> Double {
@@ -40,7 +36,7 @@ class SharedDataModel: ObservableObject {
         return cartTotal
     }
     
-    //TODO: start merging code from storeModel
+    //for Store Page
     @Published var products: [Product] = [
         Product(name: "Caesar chicken wrap", price: 6.50, image: "chicken_wrap", quantity: 0, rating: 4),
         Product(name: "Oatly milk", price: 8.00, image: "oatly_milk", quantity: 0, rating: 3),
@@ -83,5 +79,10 @@ class SharedDataModel: ObservableObject {
         }
     }
     
-    //ending
+    //for Orders Page
+    @Published var orders: [Order] = [
+        Order(total: 24.95, date: "Mar 8, 2023", status: "In progress"),
+        Order(total: 10.35, date: "Feb 24, 2023", status: "Complete"),
+        Order(total: 4.85, date: "Feb 2, 2023", status: "Complete")
+    ]
 }

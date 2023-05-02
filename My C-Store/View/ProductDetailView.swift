@@ -9,8 +9,6 @@ struct ProductDetailView: View {
     //SharedDataModel
     @EnvironmentObject var sharedData: SharedDataModel
     
-    //@EnvironmentObject var storeData: StoreViewModel
-    
     var body: some View {
         VStack{
             

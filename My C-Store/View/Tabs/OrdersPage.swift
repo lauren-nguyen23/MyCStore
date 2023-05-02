@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct OrdersPage: View {
-    
-    //@EnvironmentObject
-    @StateObject var orderData: OrderViewModel = OrderViewModel()
+
+    @EnvironmentObject var sharedData: SharedDataModel
     
     var body : some View{
             
@@ -19,7 +18,7 @@ struct OrdersPage: View {
             
             ScrollView(.vertical, showsIndicators: false) {
             //check if there are any past orders at all
-                if orderData.orders.isEmpty {
+                if sharedData.orders.isEmpty {
                     Group {
                         Text("Your wishlist is empty")
                             .font(.custom(customFont, size: 20))
@@ -28,8 +27,7 @@ struct OrdersPage: View {
                 } else {
                     //displaying all fav products
                     VStack(spacing: 15) {
-                        //TODO: replace storeData with sharedData
-                        ForEach(orderData.orders) { order in
+                        ForEach(sharedData.orders) { order in
                             HStack (spacing: 0) {
                                 OrderCardView(order: order)
                             }
@@ -83,6 +81,6 @@ struct OrdersPage: View {
 struct OrdersPage_Previews: PreviewProvider {
     static var previews: some View {
         OrdersPage()
-            //.environmentObject(SharedDataModel())
+            .environmentObject(SharedDataModel())
     }
 }

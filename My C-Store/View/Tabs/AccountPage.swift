@@ -18,7 +18,7 @@ struct AccountPage: View {
                 
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 15){
-                    //TODO: grasp avatar image
+                    //TODO: retrieve profile image
                     Image("Profile")
                         .resizable()
                         .aspectRatio(contentMode: .fill)

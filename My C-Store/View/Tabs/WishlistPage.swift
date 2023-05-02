@@ -120,7 +120,6 @@ struct WishlistPage: View {
             return product.id == currentProduct.id
         }){
             let _ = withAnimation{
-                //removing
                 sharedData.favProducts.remove(at: index)
             }
         }
