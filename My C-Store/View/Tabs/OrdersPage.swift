@@ -71,11 +71,6 @@ struct OrdersPage: View {
                 .cornerRadius(20)
         )
     }
-    
-    //TODO: write delete function???
-    func deleteProduct(product: Product) {
-        
-    }
 }
 
 struct OrdersPage_Previews: PreviewProvider {
