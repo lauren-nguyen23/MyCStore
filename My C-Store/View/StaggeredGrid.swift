@@ -1,10 +1,3 @@
-//
-//  StaggeredGrid.swift
-//  My C-Store
-//
-//  Created by Nguyen Trang on 3/22/23.
-//
-
 import SwiftUI
 
 //Custom View Builder

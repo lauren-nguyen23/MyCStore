@@ -5,98 +5,94 @@ struct StorePage: View {
     var animation: Namespace.ID
     
     @EnvironmentObject var sharedData: SharedDataModel
-    
-    @StateObject var storeData: StoreViewModel = StoreViewModel()
+    //TODO: Undo changes here to revert to StoreViewModel
+    //@StateObject var storeData: StoreViewModel = StoreViewModel()
     @State var txt = ""
     
+    let layout = [
+        GridItem(.fixed(180)),
+        GridItem(.fixed(180))
+    ]
+    
     var body : some View{
-        
         VStack(spacing: 20){
-            
             HStack (spacing: 20) {
-                
-                Text("C-Store")
-                    .font(.title)
-                    .foregroundColor(Color.black)
-                
-                Spacer()
-                
-                //Account button
-                Button(action: {
-                    
-                }) {
-                        Image("Account")
-                            .renderingMode(.original)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                }
-            }
 
-            ScrollView(.vertical, showsIndicators: false) {
+                Text("C-Store")
+                    .font(.system(size: 40))
+                    .foregroundColor(Color.black)
+
+                Spacer()
+            }
                 
-                VStack(spacing: 15){
+                    VStack(spacing: 15){
                     
                     //Search bar
-                    ZStack {
-                        if storeData.searchActivated {
-                            SearchBar()
-                        } else {
-                            SearchBar()
-                                .matchedGeometryEffect(id: "SEARCHBAR", in: animation)
-                        }
-                    }
-                    .padding(.horizontal, 25)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation(.easeInOut) {
-                            storeData.searchActivated = true
-                        }
-                    }
-                    
-                    
-                    HStack{
-
-                        Text("Order online, pick up in store").font(.body)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            
-                        }) {
-                            
-                            Text("Sort")
-                            
-                        }.foregroundColor(Color("supple"))
-                        
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    
-                    //Product list
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        
-                        HStack(spacing: 25){
-                            ForEach(storeData.products){ product in
-                                //Product Tile View
-                                ProductTileView(product: product)
+                        ZStack {
+                            //Undo changes here
+                            if sharedData.searchActivated {
+                                SearchBar()
+                            } else {
+                                SearchBar()
+                                    .matchedGeometryEffect(id: "SEARCHBAR", in: animation)
                             }
                         }
                         .padding(.horizontal, 25)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                //Undo changes here
+                                sharedData.searchActivated = true
+                            }
+                        }
+                    
+                    
+                        HStack{
+
+                            Text("Order online, pick up in store").font(.body)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                
+                            }) {
+                                
+                                Text("Sort")
+                                
+                            }.foregroundColor(Color("supple"))
+                            
+                        }
+                        .padding(.top, 15)
+                        .padding(.bottom, 15)
+                    
+                        //Product list
+                        ScrollView(.vertical, showsIndicators: false) {
+                            
+                            LazyVGrid(columns: layout){
+                                //Undo changes here
+                                ForEach(sharedData.products){ product in
+                                    //Product Tile View
+                                    ProductTileView(product: product)
+                                }
+                            }
+                            .padding(.horizontal, 25)
+                        }
+                        .padding(0)
                     }
-                    .padding(0)
-                }
-            }
-        }
-        .padding(.horizontal, 15)
-        .padding(.vertical, 10)
-        .overlay(
-            ZStack {
-                if storeData.searchActivated {
-                    SearchView(animation: animation)
-                        .environmentObject(storeData)
-                }
-            }
-        )
+                        Spacer()
+                    }
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 10)
+                    .overlay(
+                        ZStack {
+                            //Undo changes here
+                            if sharedData.searchActivated {
+                                SearchView(animation: animation)
+                                //Undo changes here
+                                    .environmentObject(sharedData)
+                            }
+                        }
+                    )
     }
     
     @ViewBuilder
@@ -141,7 +137,7 @@ struct StorePage: View {
                 .foregroundColor(.black.opacity(0.70))
                 .padding(0)
             
-            Text(product.price)
+            Text("$" + String(format: "%.2f", product.price))
                 .font(.custom(customFont, size: 10))
                 .fontWeight(.bold)
         }

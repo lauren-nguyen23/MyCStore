@@ -8,79 +8,77 @@ struct WishlistPage: View {
     @State var showDeleteOption: Bool = false
     
     var body: some View {
-        NavigationView {
-            //ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    HStack {
-                        Text("Wishlist")
-                            .font(.custom(customFont, size: 28).bold())
+        VStack {
+            HStack {
+                Text("Wishlist")
+                    .font(.system(size: 40))
+                    .foregroundColor(Color.black)
                         
-                        Spacer()
+                Spacer()
                         
-                        //Remove from Wishlist button
-                        Button {
-                            withAnimation{
-                                showDeleteOption.toggle()
-                            }
-                        } label: {
-                            Image("delete")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 25, height: 25)
-                        }
-                        .opacity(sharedData.favProducts.isEmpty ? 0 : 1)
-                        
+                //Remove from Wishlist button
+                Button {
+                    withAnimation{
+                        showDeleteOption.toggle()
                     }
-                    .padding(15)
-                    
-                    ScrollView(.vertical, showsIndicators: false) {
-                    //checking if like products are empty
-                    if sharedData.favProducts.isEmpty {
-                        
-                        Group {
-                            Text("Your wishlist is empty")
-                                .font(.custom(customFont, size: 20))
-                                .fontWeight(.semibold)
-
-                            Text("Click on the heart-shaped icon on each Product Detail Page to save items to your wishlist.")
-                                .font(.custom(customFont, size: 18))
-                                .foregroundColor(.gray)
-                                .padding(.horizontal)
-                                .padding(.top, 10)
-                                .multilineTextAlignment(.center)
-                        }
-                        
-                    } else {
-                        //displaying all favs
-                        VStack(spacing: 15) {
-                            ForEach(sharedData.favProducts) {product in
-                                HStack(spacing: 0) {
-                                    
-                                    if showDeleteOption {
-                                        Button {
-                                            deleteProduct(product: product)
-                                        } label: {
-                                            Image(systemName: "minus.circle.fill")
-                                                .font(.title2)
-                                                .foregroundColor(.red)
-                                        }
-                                        .padding(.trailing)
-                                    }
-                                    
-                                    CardView(product: product)
-                                }
-                            }
-                        }
-                        .padding(.top, 25)
-                        .padding(.horizontal)
-                    }
+                } label: {
+                    Image("delete")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 25, height: 25)
                 }
-                .padding()
+                .opacity(sharedData.favProducts.isEmpty ? 0 : 1)
+                        
             }
-            .navigationBarHidden(true)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.white)
+            .padding(15)
+                    
+            ScrollView(.vertical, showsIndicators: false) {
+                //checking if like products are empty
+                if sharedData.favProducts.isEmpty {
+                        
+                    VStack {
+                        Text("Your wishlist is empty")
+                            .font(.custom(customFont, size: 20))
+                            .fontWeight(.semibold)
+
+                        Text("Click on the heart-shaped icon on each Product Detail Page to save items to your wishlist.")
+                            .font(.custom(customFont, size: 18))
+                            .foregroundColor(.gray)
+                            .padding(.horizontal)
+                            .padding(.top, 10)
+                            .multilineTextAlignment(.center)
+                    }
+                        
+                } else {
+                    //displaying all favs
+                    VStack(spacing: 15) {
+                        ForEach(sharedData.favProducts) {product in
+                            HStack(spacing: 0) {
+                                    
+                                if showDeleteOption {
+                                    Button {
+                                        deleteProduct(product: product)
+                                    } label: {
+                                        Image(systemName: "minus.circle.fill")
+                                            .font(.title2)
+                                            .foregroundColor(.red)
+                                    }
+                                    .padding(.trailing)
+                                }
+                                    
+                                CardView(product: product)
+                            }
+                        }
+                    }
+                    .padding(.top, 25)
+                    .padding(.horizontal)
+                }
+            }
+            .padding()
         }
+        .navigationBarHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.white)
     }
     
     @ViewBuilder
@@ -96,7 +94,7 @@ struct WishlistPage: View {
                     .font(.custom(customFont, size: 18).bold())
                     .lineLimit(1)
                 
-                Text(product.price)
+                Text("$" + String(format: "%.2f", product.price))
                     .font(.custom(customFont, size: 17))
                     .fontWeight(.semibold)
             }

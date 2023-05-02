@@ -4,7 +4,7 @@ struct Product: Identifiable, Hashable {
     var id = UUID().uuidString
     var name: String
     //var description: String = ""
-    var price: String
+    var price: Double = 0.0
     var image: String = ""
     var quantity: Int = 1 //?
     

@@ -9,7 +9,7 @@ struct ProductDetailView: View {
     //SharedDataModel
     @EnvironmentObject var sharedData: SharedDataModel
     
-    @EnvironmentObject var storeData: StoreViewModel
+    //@EnvironmentObject var storeData: StoreViewModel
     
     var body: some View {
         VStack{
@@ -56,7 +56,7 @@ struct ProductDetailView: View {
                         .font(.title)
                     
                     //Product price
-                    Text(product.price)
+                    Text("$" + String(format: "%.2f", product.price))
                         .font(.title2.bold())
                     
                     //Quantity and Wishlist Button
@@ -166,9 +166,9 @@ struct ProductDetailView: View {
             
             //Add to cart button
             Button {
-                
+                isAddedToCart() ? print("added already") : addToCart()
             } label: {
-                Text("Add to Cart")
+                Text(isAddedToCart() ? "Added to Cart" : "Add to Cart")
                     .font(.title2.bold())
                     .frame(maxWidth: .infinity, maxHeight: 30)
                     .foregroundColor(.white)
@@ -210,21 +210,24 @@ struct ProductDetailView: View {
     }
     
     func addToCart() {
-        if let index = sharedData.favProducts.firstIndex(where: { product in
+        sharedData.cartProducts.append(product)
+        sharedData.cartTotal = sharedData.getTotal()
+        if let index = sharedData.cartProducts.firstIndex(where: { product in
             return self.product.id == product.id
         }) {
-            //remove from Cart
-            sharedData.cartProducts.remove(at: index)
-        } else {
-            //add to Cart
-            sharedData.cartProducts.append(product)
+            sharedData.cartProducts[index].quantity = 1
         }
     }
     
     func removeFromCart() {
-        
+        if let index = sharedData.cartProducts.firstIndex(where: { product in
+            return self.product.id == product.id
+        }) {
+            sharedData.cartProducts.remove(at: index)
+        }
     }
 }
+
 
 struct ProductDetailView_Previews: PreviewProvider {
     static var previews: some View {

@@ -50,6 +50,8 @@ struct OnBoardingPage: View {
                 }
             }
         )
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
 }
 

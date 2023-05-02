@@ -4,7 +4,8 @@ struct SearchView: View {
     
     var animation: Namespace.ID
     
-    @EnvironmentObject var storeData: StoreViewModel
+    //Undo changes here
+    @EnvironmentObject var sharedData: SharedDataModel
     
     //Activating Text Field
     @FocusState var startIF: Bool
@@ -17,9 +18,11 @@ struct SearchView: View {
                 //Close button
                 Button {
                     withAnimation{
-                        storeData.searchActivated = false
+                        //Undo changes here
+                        sharedData.searchActivated = false
                     }
-                    storeData.searchText = ""
+                    //Undo changes here
+                    sharedData.searchText = ""
                 } label: {
                     Image(systemName: "arrow.left")
                         .font(.title2)
@@ -32,7 +35,9 @@ struct SearchView: View {
                         Image(systemName: "magnifyingglass").font(.body)
                         .padding()
                         
-                        TextField("Search", text: $storeData.searchText)
+                        TextField("Search", text:
+                                    //Undo changes here
+                                  $sharedData.searchText)
                             .focused($startIF)
                             .textCase(.lowercase)
                             .disableAutocorrection(true)
@@ -49,7 +54,8 @@ struct SearchView: View {
             }
             
             //showing progress if searching, else showing no results found if empty
-            if let products = storeData.searchedProducts{
+            //Undo changes here
+            if let products = sharedData.searchedProducts{
                 if products.isEmpty {
                     //No Results Found Text
                     VStack(spacing: 10) {
@@ -59,27 +65,28 @@ struct SearchView: View {
                     .padding()
                 } else {
                     //filter results
-                    ScrollView(.vertical, showsIndicators: false){
+                    
                         VStack(spacing: 0) {
                             
                             //Found ... results text
                             Text("Found \(products.count)" + " results")
                                 .font(.custom(customFont, size: 24).bold())
                                 .padding(.vertical)
-                            
-                            //staggered grid
-                            StaggeredGrid(columns: 2, spacing: 5, list: products) { product in
-                                ProductTileView(product: product)
+                            ScrollView(.vertical, showsIndicators: false){
+                                //staggered grid
+                                StaggeredGrid(columns: 2, spacing: 5, list: products) { product in
+                                    ProductTileView(product: product)
+                                }
                             }
                         }
                         .padding()
-                    }
                 }
             } else {
                 
                 ProgressView()
                     .padding(.top, 30)
-                    .opacity(storeData.searchText == "" ? 0 : 1)
+                //Undo changes here
+                    .opacity(sharedData.searchText == "" ? 0 : 1)
             }
 
         }
@@ -109,7 +116,7 @@ struct SearchView: View {
                 .foregroundColor(.black.opacity(0.70))
                 .padding(0)
             
-            Text(product.price)
+            Text("$" + String(format: "%.2f", product.price))
                 .font(.custom(customFont, size: 10))
                 .fontWeight(.bold)
         }
@@ -120,7 +127,15 @@ struct SearchView: View {
                 .cornerRadius(25)
                 .frame(width: 154, height: 160)
         )
-        .padding(.top, 50)
+        //TODO: when tapped, show the ProductDetailPage
+        .onTapGesture {
+            withAnimation(.easeInOut) {
+                //Undo changes here
+                sharedData.detailProduct = product
+                //Undo changes here
+                sharedData.showDetailProduct = true
+            }
+        }
     }
 }
 

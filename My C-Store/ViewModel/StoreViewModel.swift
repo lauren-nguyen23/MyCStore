@@ -2,13 +2,17 @@ import SwiftUI
 import Combine
 
 class StoreViewModel: ObservableObject {
+    //Detail Product Data
+    @Published var detailProduct: Product?
+    @Published var showDetailProduct: Bool = false
+    
     @Published var products: [Product] = [
-        Product(name: "Caesar chicken wrap", price: "$6.50", image: "chicken_wrap", quantity: 0, rating: 4),
-        Product(name: "Oatly milk", price: "$8.00", image: "oatly_milk", quantity: 0, rating: 3),
-        Product(name: "Pringles", price: "$3.75", image: "pringles", quantity: 0, rating: 5),
-        Product(name: "Grapes", price: "$7.95", image: "grapes", quantity: 0, rating: 4),
-        Product(name: "Yakisoba beef flavor", price: "$2.50", image: "yakisoba", quantity: 0, rating: 2),
-        Product(name: "Kikkoman soy sauce", price: "$12.50", image: "soy_sauce", quantity: 0, rating: 5)
+        Product(name: "Caesar chicken wrap", price: 6.50, image: "chicken_wrap", quantity: 0, rating: 4),
+        Product(name: "Oatly milk", price: 8.00, image: "oatly_milk", quantity: 0, rating: 3),
+        Product(name: "Pringles", price: 3.75, image: "pringles", quantity: 0, rating: 5),
+        Product(name: "Grapes", price: 7.95, image: "grapes", quantity: 0, rating: 4),
+        Product(name: "Yakisoba beef flavor", price: 2.50, image: "yakisoba", quantity: 0, rating: 2),
+        Product(name: "Kikkoman soy sauce", price: 12.50, image: "soy_sauce", quantity: 0, rating: 5)
     ]
     
     @Published var searchText: String = ""

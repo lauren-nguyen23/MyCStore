@@ -6,57 +6,44 @@ struct OrdersPage: View {
     @StateObject var orderData: OrderViewModel = OrderViewModel()
     
     var body : some View{
-        
-        NavigationView {
             
-                VStack {
-                    HStack {
-                        Text("Orders")
-                            .font(.title)
-                            .foregroundColor(Color.black)
-                        
-                        Spacer()
-                        
-                        //Account button
-                        Button(action: {
-                            
-                        }) {
-                                Image("Account")
-                                    .renderingMode(.original)
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                        }
+        VStack {
+            HStack {
+                Text("Orders")
+                    .font(.system(size: 40))
+                    .foregroundColor(Color.black)
+                
+                Spacer()
+            }
+            .padding(15)
+            
+            ScrollView(.vertical, showsIndicators: false) {
+            //check if there are any past orders at all
+                if orderData.orders.isEmpty {
+                    Group {
+                        Text("Your wishlist is empty")
+                            .font(.custom(customFont, size: 20))
+                            .fontWeight(.semibold)
                     }
-                    .padding(15)
-                    
-                    ScrollView(.vertical, showsIndicators: false) {
-                    //check if there are any past orders at all
-                    if orderData.orders.isEmpty {
-                        Group {
-                            Text("Your wishlist is empty")
-                                .font(.custom(customFont, size: 20))
-                                .fontWeight(.semibold)
-                        }
-                    } else {
-                        //displaying all fav products
-                        VStack(spacing: 15) {
-                            //TODO: replace storeData with sharedData
-                            ForEach(orderData.orders) { order in
-                                HStack (spacing: 0) {
-                                    OrderCardView(order: order)
-                                }
+                } else {
+                    //displaying all fav products
+                    VStack(spacing: 15) {
+                        //TODO: replace storeData with sharedData
+                        ForEach(orderData.orders) { order in
+                            HStack (spacing: 0) {
+                                OrderCardView(order: order)
                             }
                         }
-                        .padding(.top, 25)
-                        .padding(.horizontal)
                     }
+                    .padding(.top, 25)
+                    .padding(.horizontal)
                 }
-                .padding()
             }
-            .navigationBarHidden(true)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.white)
+            .padding()
         }
+        .navigationBarHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.white)
     }
     
     @ViewBuilder
@@ -74,7 +61,7 @@ struct OrdersPage: View {
             
             Spacer()
             
-            Text(order.total)
+            Text("$" + String(format: "%.2f", order.total))
                 .font(.custom(customFont, size: 17))
                 .fontWeight(.bold)
         }
@@ -87,7 +74,7 @@ struct OrdersPage: View {
         )
     }
     
-    //TODO: write delete function
+    //TODO: write delete function???
     func deleteProduct(product: Product) {
         
     }
