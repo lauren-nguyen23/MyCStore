@@ -87,7 +87,7 @@ class SharedDataModel: ObservableObject {
     @Published var myOrders: [Order] = []
     
     func parseOrders(){
-        
+        myOrders = []
         let query = PFQuery(className:"Order")
         query.whereKey("userId", equalTo: PFUser.current()?.objectId)
         query.findObjectsInBackground { (orders, error) in
@@ -112,12 +112,11 @@ class SharedDataModel: ObservableObject {
         }
     }
     
-    func toString(date: Date, format: String ) -> String
-        {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = format
-            return dateFormatter.string(from: date)
-        }
+    func toString(date: Date, format: String ) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: date)
+    }
     //TODO: implement this function
 //    func parseProducts() -> [Product]{}
 }
