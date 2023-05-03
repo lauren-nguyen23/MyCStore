@@ -18,13 +18,25 @@ struct AccountPage: View {
                 
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 15){
-                    //TODO: retrieve profile image
-                    Image("Profile")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+                    if let imageFile = PFUser.current()!["avatar"] as! PFFileObject {
+                        let urlString = imageFile.url!
+                        let url = URL(string: urlString)!
+                        
+                        AsyncImage(
+                          url: url,
+                          content: { image in
+                          image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                        }, placeholder: {
+                          Color.gray
+                        })
                         .frame(width: 200, height: 200)
                         .clipShape(Circle())
+                        .clipShape(Circle())
                         .padding(40)
+                    }
+                        
                     
                     if let name = PFUser.current()!["name"] as? String {
                         Text(name)

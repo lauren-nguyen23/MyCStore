@@ -1,5 +1,7 @@
 import SwiftUI
 import Combine
+import Parse
+import ParseSwift
 
 class SharedDataModel: ObservableObject {
     //Detail Product Data
@@ -62,6 +64,7 @@ class SharedDataModel: ObservableObject {
                     self.searchedProducts = nil
                 }
             })
+        parseOrders()
     }
     
     func filterProductBySearch() {
@@ -80,9 +83,41 @@ class SharedDataModel: ObservableObject {
     }
     
     //for Orders Page
-    @Published var orders: [Order] = [
-        Order(total: 24.95, date: "Mar 8, 2023", status: "In progress"),
-        Order(total: 10.35, date: "Feb 24, 2023", status: "Complete"),
-        Order(total: 4.85, date: "Feb 2, 2023", status: "Cancelled")
-    ]
+    
+    @Published var myOrders: [Order] = []
+    
+    func parseOrders(){
+        
+        let query = PFQuery(className:"Order")
+        query.whereKey("userId", equalTo: PFUser.current()?.objectId)
+        query.findObjectsInBackground { (orders, error) in
+            if let orders = orders {
+                print("Successfully retrieved \(orders.count) orders.")
+                print(orders[0])
+                for order in orders {
+                    
+                    let retrievedOrder = Order(
+                        userId: order["userId"] as? String ?? "",
+                        total: order["total"] as? Double ?? 0.0,
+                        date: self.toString(date: order["date"] as! Date, format: "MMM dd, yyyy"),
+                        status: order["status"] as? String ?? ""
+                    )
+                    self.myOrders.append(retrievedOrder)
+                }
+                print("These are my orders")
+                print(self.myOrders)
+            } else {
+                print(error?.localizedDescription)
+            }
+        }
+    }
+    
+    func toString(date: Date, format: String ) -> String
+        {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = format
+            return dateFormatter.string(from: date)
+        }
+    //TODO: implement this function
+//    func parseProducts() -> [Product]{}
 }

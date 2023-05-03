@@ -1,4 +1,6 @@
 import SwiftUI
+import Parse
+import ParseSwift
 
 struct StorePage: View {
     
@@ -156,3 +158,4 @@ struct StorePage_Previews: PreviewProvider {
         MainPage()
     }
 }
+

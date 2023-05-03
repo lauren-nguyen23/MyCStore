@@ -1,4 +1,6 @@
 import SwiftUI
+import Parse
+import ParseSwift
 
 struct OrdersPage: View {
 
@@ -18,16 +20,16 @@ struct OrdersPage: View {
             
             ScrollView(.vertical, showsIndicators: false) {
             //check if there are any past orders at all
-                if sharedData.orders.isEmpty {
+                if sharedData.myOrders.isEmpty {
                     Group {
                         Text("Your order history is empty.")
                             .font(.custom(customFont, size: 20))
                             .fontWeight(.semibold)
                     }
                 } else {
-                    //displaying all fav products
+                    //displaying all orders
                     VStack(spacing: 15) {
-                        ForEach(sharedData.orders) { order in
+                        ForEach(sharedData.myOrders) { order in
                             HStack (spacing: 0) {
                                 OrderCardView(order: order)
                             }

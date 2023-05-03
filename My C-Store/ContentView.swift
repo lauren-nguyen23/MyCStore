@@ -1,9 +1,11 @@
 import SwiftUI
 import Parse
+import ParseSwift
 
 struct ContentView: View {
     
     @AppStorage("loginStatus") var loginStatus: Bool = false
+    @EnvironmentObject var sharedData: SharedDataModel
     
     var body: some View {
         Group {
