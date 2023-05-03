@@ -8,6 +8,10 @@ struct ProductDetailView: View {
     
     //SharedDataModel
     @EnvironmentObject var sharedData: SharedDataModel
+    @State private var showingReviews = false
+//    @State private var presentReviewInput = false
+//    @State private var review: String = ""
+    //@Binding var presentMe : Bool
     
     var body: some View {
         VStack{
@@ -146,14 +150,15 @@ struct ProductDetailView: View {
                     }
                 
                     Button {
-                        //TODO: show reviews
+                        showingReviews = true
                     } label: {
                         Text("Read reviews")
                             .font(.custom(customFont, size: 18).bold())
                             .foregroundColor(Color("supple"))
                     }
-                    
-                    
+                    .popover(isPresented: $showingReviews) {
+                        ReviewsPopover(product: product)
+                    }
                 }
                 .padding([.horizontal, .bottom], 20)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -224,6 +229,67 @@ struct ProductDetailView: View {
             sharedData.cartProducts.remove(at: index)
         }
     }
+    
+    @ViewBuilder
+    func ReviewsPopover(product: Product) -> some View {
+        VStack {
+            
+            HStack (alignment: .top, spacing: 10) {
+            
+                Text("Reviews")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding([.top, .leading])
+            
+                Spacer ()
+            
+                //button to close popover
+                Button  (action: {
+                   showingReviews.toggle()
+                }, label: {
+                    Image(systemName: "xmark.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(Color.gray)
+                })
+                .padding([.top, .trailing])
+    
+            }
+            
+            //displaying all reviews
+            ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 15) {
+                        ForEach(product.reviews) { review in
+                            HStack (spacing: 0) {
+                                ReviewCardView(review: review)
+                            }
+                        }
+                    }
+                    .padding(.top, 25)
+                    .padding(.horizontal)
+            }
+            .padding()
+        }
+    }
+    
+    @ViewBuilder
+    func ReviewCardView(review: Review) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(review.content)
+                .font(.custom(customFont, size: 18))
+                .foregroundColor(.black)
+                .padding(.horizontal)
+                .padding(.top, 5)
+                .multilineTextAlignment(.leading)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color("off_white"))
+        .cornerRadius(20)
+        
+    }
 }
 
 
@@ -234,3 +300,4 @@ struct ProductDetailView_Previews: PreviewProvider {
         MainPage()
     }
 }
+

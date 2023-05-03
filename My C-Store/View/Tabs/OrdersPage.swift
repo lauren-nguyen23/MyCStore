@@ -20,7 +20,7 @@ struct OrdersPage: View {
             //check if there are any past orders at all
                 if sharedData.orders.isEmpty {
                     Group {
-                        Text("Your wishlist is empty")
+                        Text("Your order history is empty.")
                             .font(.custom(customFont, size: 20))
                             .fontWeight(.semibold)
                     }
@@ -67,8 +67,18 @@ struct OrdersPage: View {
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            Color("tile_bg")
-                .cornerRadius(20)
+            Group{
+                if (order.status == "In progress") {
+                    Color("in_progress")
+                        .cornerRadius(20)
+                } else if (order.status == "Complete") {
+                    Color("complete")
+                        .cornerRadius(20)
+                } else if (order.status == "Cancelled") {
+                    Color("cancelled")
+                        .cornerRadius(20)
+                }
+            }
         )
     }
 }
