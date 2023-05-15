@@ -19,7 +19,7 @@ struct OrdersPage: View {
             .padding(15)
             
             ScrollView(.vertical, showsIndicators: false) {
-            //check if there are any past orders at all
+            // check if there are any past orders at all
                 if sharedData.myOrders.isEmpty {
                     Group {
                         Text("Your order history is empty.")
@@ -27,7 +27,7 @@ struct OrdersPage: View {
                             .fontWeight(.semibold)
                     }
                 } else {
-                    //displaying all orders
+                    // displaying all orders
                     VStack(spacing: 15) {
                         ForEach(sharedData.myOrders) { order in
                             HStack (spacing: 0) {

@@ -4,11 +4,12 @@ struct LoginPage: View {
     @StateObject var loginData: LoginPageModel = LoginPageModel()
     
     @State var showMainPage: Bool = false
+    @State private var showingAlert = false
     
     var body: some View {
         NavigationView{
             VStack {
-                //Welcome text
+                // Welcome text
                 Text("Welcome to\nMy C-Store!")
                     .font(.custom(customFont, size: 30).bold())
                     .foregroundColor(.black.opacity(0.75))
@@ -19,7 +20,7 @@ struct LoginPage: View {
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 15) {
-                        //Login input fields
+                        // Login input fields
                         Spacer()
                         CustomTextField(hint: "Enter your username", value: $loginData.username, password: false)
                         Spacer()
@@ -36,13 +37,15 @@ struct LoginPage: View {
                             isActive: $showMainPage) {
                                 EmptyView()
                             }
-                        //Signin button
+                        // Signin button
                         Button {
                             loginData.login()
                             if (loginData.loginStatus) {
                                 self.showMainPage = true
+                                self.showingAlert = false
                             } else {
                                 self.showMainPage = false
+                                self.showingAlert = true
                             }
                         } label: {
                             Text("Sign In")
@@ -52,6 +55,9 @@ struct LoginPage: View {
                                 .foregroundColor(.white)
                                 .background(Color("supple"))
                                 .cornerRadius(50)
+                        }
+                        .alert("Incorrect credentials", isPresented: $showingAlert) {
+                            Button("Try again", role: .cancel) {}
                         }
                         .padding(.top, 25)
                         .padding(.horizontal)

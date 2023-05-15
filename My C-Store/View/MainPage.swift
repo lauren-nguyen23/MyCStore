@@ -2,14 +2,14 @@ import SwiftUI
 
 struct MainPage: View {
     
-    //Current tab
+    // Current tab
     @State var currentTab: Tab = .Store
     
     @StateObject var sharedData: SharedDataModel = SharedDataModel()
     
     @Namespace var animation
     
-    //Hiding Tab Bar
+    // Hiding Tab Bar
     init() {
         UITabBar.appearance().isHidden = true
     }
@@ -19,7 +19,7 @@ struct MainPage: View {
         
             VStack(spacing: 0) {
                 
-                //Tab View
+                // Tab View
                 TabView(selection: $currentTab) {
                     StorePage(animation: animation)
                         .environmentObject(sharedData)
@@ -56,12 +56,12 @@ struct MainPage: View {
                         .navigationBarBackButtonHidden(true)
                 }
                 
-                //Custom Tab Bar
+                // Custom Tab Bar
                 HStack(spacing: 0) {
                     ForEach(Tab.allCases, id: \.self) { tab in
                         
                         Button {
-                            //button action: updating tab
+                            // button action: updating tab
                             currentTab = tab
                         } label: {
                             Image(tab.rawValue)
@@ -79,7 +79,7 @@ struct MainPage: View {
             }
             .overlay(
                 ZStack {
-                    //ProductDetailView
+                    // ProductDetailView
                     if let product = sharedData.detailProduct, sharedData.showDetailProduct {
                         
                         ProductDetailView(product: product, animation: animation)
@@ -100,8 +100,7 @@ struct MainPage_Previews: PreviewProvider {
     }
 }
 
-//Making Case Iterable
-//Tab cases
+// Tab cases
 enum Tab: String, CaseIterable {
     case Store = "Store"
     case Wishlist = "Wishlist"

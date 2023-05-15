@@ -1,10 +1,3 @@
-//
-//  My_C_StoreTests.swift
-//  My C-StoreTests
-//
-//  Created by Nguyen Trang on 3/7/23.
-//
-
 import XCTest
 @testable import My_C_Store
 

@@ -10,6 +10,7 @@
 		0BA99118BCFD9DEABB44CB55 /* Pods_My_C_Store.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 789B63553563202E2B0B96FE /* Pods_My_C_Store.framework */; };
 		3878388A6F05C6646A826D5D /* Pods_My_C_Store_My_C_StoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A898FEAC570D23AAEB442ECE /* Pods_My_C_Store_My_C_StoreUITests.framework */; };
 		3E1DB5642A01EE01004973FC /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1DB5632A01EE01004973FC /* Review.swift */; };
+		3E1DB5662A02AEB2004973FC /* Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E1DB5652A02AEB2004973FC /* Rating.swift */; };
 		3E282FCC29B8CBF000477205 /* CartPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E282FCB29B8CBF000477205 /* CartPage.swift */; };
 		3E282FCE29B8D24100477205 /* OrdersPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E282FCD29B8D24100477205 /* OrdersPage.swift */; };
 		3E282FD029B8DA6D00477205 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E282FCF29B8DA6D00477205 /* Order.swift */; };
@@ -78,6 +79,7 @@
 		2696D0EF4854D962DBA62ECE /* Pods-My C-Store.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-My C-Store.debug.xcconfig"; path = "Target Support Files/Pods-My C-Store/Pods-My C-Store.debug.xcconfig"; sourceTree = "<group>"; };
 		2B5040ACC2AB6B3628F84602 /* Pods_My_C_StoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_My_C_StoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E1DB5632A01EE01004973FC /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
+		3E1DB5652A02AEB2004973FC /* Rating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rating.swift; sourceTree = "<group>"; };
 		3E282FCB29B8CBF000477205 /* CartPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartPage.swift; sourceTree = "<group>"; };
 		3E282FCD29B8D24100477205 /* OrdersPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersPage.swift; sourceTree = "<group>"; };
 		3E282FCF29B8DA6D00477205 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				3EF2F20D29F057DC001B7A9A /* User.swift */,
 				3E282FCF29B8DA6D00477205 /* Order.swift */,
 				3E1DB5632A01EE01004973FC /* Review.swift */,
+				3E1DB5652A02AEB2004973FC /* Rating.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				3ED1486229B8486400551D09 /* LoginPage.swift in Sources */,
 				3ED1486F29B8640500551D09 /* Product.swift in Sources */,
 				3E1DB5642A01EE01004973FC /* Review.swift in Sources */,
+				3E1DB5662A02AEB2004973FC /* Rating.swift in Sources */,
 				3E38583229CB47A900F20C66 /* StaggeredGrid.swift in Sources */,
 				3ED1487329B8720D00551D09 /* WishlistPage.swift in Sources */,
 				3E282FCC29B8CBF000477205 /* CartPage.swift in Sources */,

@@ -1,10 +1,3 @@
-//
-//  My_C_StoreUITests.swift
-//  My C-StoreUITests
-//
-//  Created by Nguyen Trang on 3/7/23.
-//
-
 import XCTest
 
 class My_C_StoreUITests: XCTestCase {

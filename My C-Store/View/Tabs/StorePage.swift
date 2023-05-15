@@ -27,7 +27,7 @@ struct StorePage: View {
                 
                     VStack(spacing: 15){
                     
-                    //Search bar
+                    // Search bar
                         ZStack {
                             if sharedData.searchActivated {
                                 SearchBar()
@@ -51,24 +51,16 @@ struct StorePage: View {
                             
                             Spacer()
                             
-                            Button(action: {
-                                
-                            }) {
-                                
-                                Text("Sort")
-                                
-                            }.foregroundColor(Color("supple"))
-                            
                         }
                         .padding(.top, 15)
                         .padding(.bottom, 15)
                     
-                        //Product list
+                        // Product list
                         ScrollView(.vertical, showsIndicators: false) {
                             
                             LazyVGrid(columns: layout){
                                 ForEach(sharedData.products){ product in
-                                    //Product Tile View
+                                    // Product Tile View
                                     ProductTileView(product: product)
                                 }
                             }
@@ -109,22 +101,17 @@ struct StorePage: View {
     @ViewBuilder
     func ProductTileView(product: Product) -> some View {
         VStack(spacing: 10) {
-            ZStack {
-                if sharedData.showDetailProduct{
-                    Image(product.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .opacity(0)
-                } else {
-                    Image(product.image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .matchedGeometryEffect(id: "\(product.id)IMAGE", in: animation)
-                }
-            }
             
-                .frame(width: 110, height: 90)
-                .padding(.top, 20)
+            AsyncImage(url: URL(string: product.image), content: { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .matchedGeometryEffect(id: "\(product.id)IMAGE", in: animation)
+            }, placeholder: {
+                Color.gray
+            })
+            .frame(width: 110, height: 90)
+            .padding(.top, 20)
             
             Text(product.name)
                 .font(.custom(customFont, size: 10))
@@ -143,7 +130,7 @@ struct StorePage: View {
                 .cornerRadius(25)
                 .frame(width: 154, height: 160)
         )
-        //when tapped, show the ProductDetailPage
+        // when tapped, show the ProductDetailView
         .onTapGesture {
             withAnimation(.easeInOut) {
                 sharedData.detailProduct = product

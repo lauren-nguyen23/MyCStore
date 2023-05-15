@@ -1,16 +1,14 @@
 import SwiftUI
 
-//Custom View Builder
-
 struct StaggeredGrid<Content: View, T: Identifiable>: View where T: Hashable{
     var content: (T) -> Content
     
     var list: [T]
     
-    //Columns
+    // Columns
     var columns: Int
     
-    //Properties
+    // Properties
     var showIndicators: Bool
     var spacing: CGFloat
     

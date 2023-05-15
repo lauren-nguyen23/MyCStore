@@ -4,7 +4,7 @@ struct WishlistPage: View {
     
     @EnvironmentObject var sharedData: SharedDataModel
     
-    //Delete option
+    // Delete option
     @State var showDeleteOption: Bool = false
     
     var body: some View {
@@ -16,7 +16,7 @@ struct WishlistPage: View {
                         
                 Spacer()
                         
-                //Remove from Wishlist button
+                // Remove from Wishlist button
                 Button {
                     withAnimation{
                         showDeleteOption.toggle()
@@ -33,7 +33,7 @@ struct WishlistPage: View {
             .padding(15)
                     
             ScrollView(.vertical, showsIndicators: false) {
-                //checking if like products are empty
+                // checking if fav products are empty
                 if sharedData.favProducts.isEmpty {
                         
                     VStack {
@@ -50,7 +50,7 @@ struct WishlistPage: View {
                     }
                         
                 } else {
-                    //displaying all favs
+                    // displaying all fav products
                     VStack(spacing: 15) {
                         ForEach(sharedData.favProducts) {product in
                             HStack(spacing: 0) {
@@ -84,10 +84,15 @@ struct WishlistPage: View {
     @ViewBuilder
     func CardView(product: Product) -> some View {
         HStack(spacing: 15) {
-            Image(product.image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+            
+            AsyncImage(url: URL(string: product.image), content: { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }, placeholder: {
+                Color.gray
+            })
+            .frame(width: 100, height: 100)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(product.name)

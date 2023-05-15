@@ -3,7 +3,7 @@ import SwiftUI
 let customFont = "Poppins-Light"
 
 struct OnBoardingPage: View {
-    //Navigate to Login page
+    // Navigate to Login page
     @State var showLoginPage: Bool = false
     
     var body: some View {

@@ -6,7 +6,7 @@ struct CartPage: View {
     
     @EnvironmentObject var sharedData: SharedDataModel
     
-    //Delete option
+    // Delete option
     @State var showDeleteOption: Bool = false
     @State private var showingCheckout = false
     @State private var pickupTime = Date.now
@@ -20,7 +20,7 @@ struct CartPage: View {
                 
                 Spacer()
                 
-                //Remove from Cart button
+                // Remove from Cart button
                 Button {
                     withAnimation{
                         showDeleteOption.toggle()
@@ -36,7 +36,7 @@ struct CartPage: View {
             .padding(15)
                 
             ScrollView(.vertical, showsIndicators: false) {
-                //check if cart is empty
+                // check if cart is empty
                 if sharedData.cartProducts.isEmpty {
                     Group {
                         Text("Your cart is empty")
@@ -44,7 +44,7 @@ struct CartPage: View {
                             .fontWeight(.semibold)
                     }
                 } else {
-                    //displaying all products in cart
+                    // displaying all products in cart
                     VStack(spacing: 15) {
                         ForEach($sharedData.cartProducts) { $product in
                             HStack (spacing: 0) {
@@ -68,16 +68,15 @@ struct CartPage: View {
             }
             .padding()
                 
-            //Showing Total of cart and Checkout button
+            // Showing Total of cart and Checkout button
             VStack(spacing: 0) {
                 //Total
                 Text("$" + String(format: "%.2f", sharedData.getTotal()))
                     .font(.custom(customFont, size: 25).bold())
                     .foregroundColor(.black)
                 
-                //Checkout button
+                // Checkout button
                 Button {
-                    //TODO: add checkout function to proceed to Checkout screen
                     showingCheckout.toggle()
                 } label: {
                     Text("Check Out")
@@ -93,6 +92,7 @@ struct CartPage: View {
                 .popover(isPresented: $showingCheckout) {
                     CheckoutPopover(products: sharedData.cartProducts)
                 }
+                .disabled(sharedData.getTotal() == 0.0)
             }
         }
         .navigationBarHidden(true)
@@ -104,17 +104,21 @@ struct CartPage: View {
     func ProductCardView(product: Product) -> some View {
         
         HStack(spacing: 15) {
-            Image(product.image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+            AsyncImage(url: URL(string: product.image), content: { image in
+              image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }, placeholder: {
+                Color.gray
+            })
+            .frame(width: 100, height: 100)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(product.name)
                     .font(.custom(customFont, size: 18).bold())
                     .lineLimit(1)
                 
-                //Quantity buttons
+                // Quantity buttons
                 HStack(spacing: 10) {
                     Button {
                         if let index = sharedData.cartProducts.firstIndex(where: { prod in
@@ -159,6 +163,11 @@ struct CartPage: View {
                     }
                 }
             }
+            
+            Spacer()
+            
+            // running subtotal
+            Text("$" + String(format: "%.2f", Double(product.quantity) * product.price))
         }
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
@@ -214,7 +223,7 @@ struct CartPage: View {
             
                 Spacer ()
             
-                //button to close popover
+                // button to close popover
                 Button  (action: {
                    showingCheckout.toggle()
                 }, label: {
@@ -222,19 +231,19 @@ struct CartPage: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 25, height: 25)
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(Color("supple"))
                 })
                 .padding([.top, .trailing])
     
             }
             .padding(.vertical, 10)
             
-            //displaying items
+            // displaying items
             ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 15) {
                         ForEach(sharedData.cartProducts) { product in
                             HStack (spacing: 0) {
-                                ProductCardView1(product: product)
+                                ProductCardViewCheckout(product: product)
                             }
                         }
                     }
@@ -279,7 +288,7 @@ struct CartPage: View {
             Spacer()
             
             Button {
-                placeOrder(userId: (PFUser.current()?.objectId)! ?? "", total: sharedData.getTotal(), date: pickupTime ,status: "In progress" )
+                placeOrder(userId: (PFUser.current()?.objectId)! ?? "", total: sharedData.getTotal(), date: pickupTime, status: "In progress" )
                 sharedData.parseOrders()
                 showingCheckout.toggle()
             } label: {
@@ -297,14 +306,22 @@ struct CartPage: View {
     }
     
     @ViewBuilder
-    func ProductCardView1(product: Product) -> some View {
+    func ProductCardViewCheckout(product: Product) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(product.name)
-                .font(.custom(customFont, size: 18))
-                .foregroundColor(.black)
-                .padding(.horizontal)
-                .padding(.top, 5)
-                .multilineTextAlignment(.leading)
+            HStack {
+                Text(product.name)
+                    .font(.custom(customFont, size: 18))
+                    .foregroundColor(.black)
+                    .padding(.horizontal)
+                    .padding(.top, 5)
+                    .multilineTextAlignment(.leading)
+                Spacer()
+                Text("x " + String(product.quantity))
+                    .font(.custom(customFont, size: 18))
+                    .foregroundColor(.black)
+                    .padding(.horizontal)
+                    .padding(.top, 5)
+            }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 10)

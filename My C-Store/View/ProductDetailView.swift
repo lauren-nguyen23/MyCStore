@@ -1,26 +1,31 @@
 import SwiftUI
+import Parse
+import ParseSwift
 
 struct ProductDetailView: View {
     var product: Product
     
-    //Matched Geometry Effect
+    // Matched Geometry Effect
     var animation: Namespace.ID
     
-    //SharedDataModel
+    // SharedDataModel
     @EnvironmentObject var sharedData: SharedDataModel
     @State private var showingReviews = false
-//    @State private var presentReviewInput = false
-//    @State private var review: String = ""
-    //@Binding var presentMe : Bool
+    @State private var showingReviewTextField = false
+    @State private var reviewInput: String = ""
+    @State private var listReviews: [Review] = []
+    @State private var showingRatingTextField = false
+    @State private var userRating: Double = 0.0
+    @State private var currRating: Double = 5.0
     
     var body: some View {
         VStack{
             
             VStack{
-                //Title Bar
+                // Title bar
                 HStack{
                 
-                    //back button
+                    // Back button
                     Button(action: {
                         withAnimation(.easeInOut) {
                             sharedData.showDetailProduct = false
@@ -35,13 +40,17 @@ struct ProductDetailView: View {
                 }
                 .padding()
                 
-                //Product Image
-                Image(product.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .matchedGeometryEffect(id: "\(product.id)IMAGE", in: animation)
-                    .padding(.horizontal)
-                    .frame(maxHeight: .infinity)
+                // Product image
+                AsyncImage(url: URL(string: product.image)!, content: { image in
+                  image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }, placeholder: {
+                    Color.gray
+                })
+                .matchedGeometryEffect(id: "\(product.id)IMAGE", in: animation)
+                .padding(.horizontal)
+                .frame(maxHeight: .infinity)
                 
                 Spacer()
                     
@@ -51,50 +60,17 @@ struct ProductDetailView: View {
             .zIndex(1)
 
             ScrollView(.vertical, showsIndicators: false) {
-                //Product data
+                // product data
                 VStack (alignment: .center, spacing: 15){
-                    //Product name
+                    // product name
                     Text(product.name)
                         .font(.title)
                     
-                    //Product price
+                    // product price
                     Text("$" + String(format: "%.2f", product.price))
                         .font(.title2.bold())
-                    
-                    //Quantity and Wishlist Button
-//                    HStack {
-//                        //- Quantity +
-//                        HStack(spacing: 10) {
-//                            Button {
-//                                removeFromCart()
-//                            } label: {
-//                                Image(systemName: "minus")
-//                                    .font(.body.bold())
-//                                    .foregroundColor(Color("supple"))
-//                                    .frame(width: 30, height: 30)
-//                                    .background(Color("powder"))
-//                                    .cornerRadius(15)
-//                            }
-//
-//                            Text("\(product.quantity)")
-//                                .font(.custom(customFont, size: 22))
-//                                .fontWeight(.semibold)
-//                                .foregroundColor(.black)
-//
-//                            Button {
-//                                addToCart()
-//                            } label: {
-//                                Image(systemName: "plus")
-//                                    .font(.body.bold())
-//                                    .foregroundColor(Color("supple"))
-//                                    .frame(width: 30, height: 30)
-//                                    .background(Color("powder"))
-//                                    .cornerRadius(15)
-//                            }
-//                        }
-//                        .padding(.horizontal, 15)
                         
-                        //Liked Button
+                        // Wishlist Button
                         Button {
                             addToWishlist()
                         } label: {
@@ -105,27 +81,21 @@ struct ProductDetailView: View {
                                 .frame(width: 30, height: 30)
                                 .foregroundColor(isInWishlist() ? .red : .gray.opacity(0.7))
                         }
-                    //}
                     
-                    //Rating display
-                    //TODO: add function to color the stars
+                    // show current overall rating
                     HStack {
-//                        Image(systemName: "star")
-//                        Image(systemName: "star")
-//                        Image(systemName: "star")
-//                        Image(systemName: "star")
-//                        Image(systemName: "star")
-                        RatingView(rating: product.rating)
+                        Text("Rating by other users: ")
                         
-                        Text("\(String(product.rating))" + " (" + "\(product.quantity)" + ")")
+                        // load rating from database
+                        Text("\(String(format: "%.1f", loadCurrentRatings()))" + " / 5")
                     }
                     
-                    //Rate and Review Buttons
+                    // Rate and Review Buttons
                     HStack {
                         
-                        //Rate button
+                        // Rate button
                         Button {
-                            //TODO: add rate function
+                            showingRatingTextField.toggle()
                         } label: {
                             Text("Rate")
                                 .font(.title3.bold())
@@ -134,10 +104,13 @@ struct ProductDetailView: View {
                                 .background(Color("supple"))
                                 .cornerRadius(50)
                         }
+                        .popover(isPresented: $showingRatingTextField) {
+                            RateInputPopover(product: product)
+                        }
                         
-                        //Review button
+                        // Review button
                         Button {
-                            //TODO: add review function
+                            showingReviewTextField.toggle()
                         } label: {
                             Text("Review")
                                 .font(.title3.bold())
@@ -146,10 +119,14 @@ struct ProductDetailView: View {
                                 .background(Color("supple"))
                                 .cornerRadius(50)
                         }
+                        .popover(isPresented: $showingReviewTextField) {
+                            ReviewInputPopover(product: product)
+                        }
                         
                     }
                 
                     Button {
+                        readReviews(productName: product.name)
                         showingReviews = true
                     } label: {
                         Text("Read reviews")
@@ -167,9 +144,9 @@ struct ProductDetailView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .zIndex(0)
             
-            //Add to cart button
+            // Add to Cart button
             Button {
-                isAddedToCart() ? print("added already") : addToCart()
+                isAddedToCart() ? print("Added already") : addToCart()
             } label: {
                 Text(isAddedToCart() ? "Added to Cart" : "Add to Cart")
                     .font(.title2.bold())
@@ -182,6 +159,7 @@ struct ProductDetailView: View {
                         .shadow(color: .black.opacity(0.06), radius: 5, x: 5, y: 5))
             }
             .padding(.horizontal, 20)
+            .disabled(isAddedToCart())
         }
         .animation(.easeInOut, value: sharedData.favProducts)
         .animation(.easeInOut, value: sharedData.cartProducts)
@@ -192,10 +170,10 @@ struct ProductDetailView: View {
         if let index = sharedData.favProducts.firstIndex(where: { product in
             return self.product.id == product.id
         }) {
-            //remove from Wishlist
+            // remove from Wishlist
             sharedData.favProducts.remove(at: index)
         } else {
-            //add to Wishlist
+            // add to Wishlist
             sharedData.favProducts.append(product)
         }
     }
@@ -230,6 +208,218 @@ struct ProductDetailView: View {
         }
     }
     
+    func readReviews(productName: String){
+        listReviews = []
+        let query = PFQuery(className:"ItemReview")
+        query.whereKey("productName", equalTo: productName)
+        query.findObjectsInBackground { (reviews, error) in
+            if let reviews = reviews {
+                print("Successfully retrieved \(reviews.count) reviews.")
+                for review in reviews {
+                    let retrievedReview = Review(
+                        productName: review["productName"] as? String ?? "",
+                        content: review["content"] as? String ?? ""
+                    )
+                    listReviews.append(retrievedReview)
+                }
+            } else {
+                print(error?.localizedDescription)
+            }
+        }
+    }
+    
+    
+    func submitReview(productName: String, content: String) {
+        let review = PFObject(className: "ItemReview")
+        review["productName"] = productName
+        review["content"] = content
+        
+        review.saveInBackground { (success, error) in
+            if success {
+                print("Review submitted!")
+            } else {
+                print("Error submitting review!")
+            }
+        }
+    }
+    
+    func submitRating(productName: String, userRating: Double) {
+        // save Rating
+        let rating = PFObject(className: "Rating")
+        rating["productName"] = productName
+        rating["rating"] = userRating
+        
+        rating.saveInBackground { (success, error) in
+            if success {
+                print("Rating submitted!")
+            } else {
+                print("Error submitting rating!")
+            }
+        }
+        
+        // query all existing ratings to count number of current ratings
+        var numRatings = 0
+        let queryRating = PFQuery(className:"Rating")
+        queryRating.whereKey("productName", equalTo: productName)
+        queryRating.findObjectsInBackground { (ratings, error) in
+            if let ratings = ratings {
+                for rating in ratings {
+                    numRatings += 1
+                }
+            } else {
+                print(error?.localizedDescription)
+            }
+        }
+        
+        // query products to take curr rating
+        let query = PFQuery(className:"Product")
+        query.whereKey("name", equalTo: productName)
+        query.findObjectsInBackground { (product, error) in
+            if let product = product {
+                var currentRating = product[0]["rating"] as! Double ?? 0.0
+                
+                // update the rating property
+                product[0]["rating"] = (userRating + currentRating*Double(numRatings-1))/Double(numRatings)
+                
+                // save changes synchronously
+                product[0].saveInBackground()
+                
+                self.currRating = product[0]["rating"] as! Double ?? 0.0
+            } else {
+                print(error?.localizedDescription)
+            }
+        }
+    }
+    
+    func loadCurrentRatings() -> Double {
+        let query = PFQuery(className:"Product")
+        query.whereKey("name", equalTo: product.name)
+        query.findObjectsInBackground { (product, error) in
+            if let product = product {
+                self.currRating = product[0]["rating"] as! Double ?? 0.0
+            }
+        }
+        return self.currRating
+    }
+    
+    @ViewBuilder
+    func RateInputPopover(product: Product) -> some View {
+        VStack {
+            
+            HStack (alignment: .top, spacing: 10) {
+            
+                Text("Your Rating")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding([.top, .leading])
+            
+                Spacer ()
+            
+                // button to close popover
+                Button  (action: {
+                   showingRatingTextField.toggle()
+                }, label: {
+                    Image(systemName: "xmark.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(Color("supple"))
+                })
+                .padding([.top, .trailing])
+    
+            }
+            
+            Spacer()
+            
+            // taking rating input
+            Text("Insert your rating below:")
+            
+            RatingView(maxRating: 5, rating: $userRating)
+                            .padding(.bottom, 20)
+                            .padding(.top, 20)
+                        
+            Text("Rating: \(userRating, specifier: "%.1f")")
+            
+            Spacer()
+            
+            Button (action: {
+                submitRating(productName: product.name, userRating: userRating)
+                showingRatingTextField.toggle()
+            }, label: {
+                Text("Submit rating")
+                    .font(.custom(customFont, size: 18).bold())
+                    .foregroundColor(.white).padding(.vertical, 20)
+                    .frame(maxWidth: 170, maxHeight: 45)
+                    .background(Color("supple"))
+                    .cornerRadius(50)
+                    .padding(.vertical, 20)
+            })
+            .padding(0)
+            .padding(.horizontal)
+            
+        }
+    }
+    
+    @ViewBuilder
+    func ReviewInputPopover(product: Product) -> some View {
+        VStack {
+            
+            HStack (alignment: .top, spacing: 10) {
+            
+                Text("Your Review")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding([.top, .leading])
+            
+                Spacer ()
+            
+                // button to close popover
+                Button  (action: {
+                   showingReviewTextField.toggle()
+                }, label: {
+                    Image(systemName: "xmark.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(Color("supple"))
+                })
+                .padding([.top, .trailing])
+    
+            }
+            
+            Spacer()
+            
+            Text("Insert your review below:")
+            
+            // take review input
+            ZStack {
+                TextEditor(text: $reviewInput)
+                Text(reviewInput).opacity(0).padding(.all, 8)
+            }
+            .shadow(radius: 1)
+            .frame(width: 350, height: 200)
+            
+            Spacer()
+            
+            // submit review
+            Button (action: {
+                submitReview(productName: product.name, content: reviewInput)
+                showingReviewTextField.toggle()
+            }, label: {
+                Text("Submit review")
+                    .font(.custom(customFont, size: 18).bold())
+                    .foregroundColor(.white).padding(.vertical, 20)
+                    .frame(maxWidth: 170, maxHeight: 45)
+                    .background(Color("supple"))
+                    .cornerRadius(50)
+                    .padding(.vertical, 20)
+            })
+            .padding(0)
+            .padding(.horizontal)
+            
+        }
+    }
+    
     @ViewBuilder
     func ReviewsPopover(product: Product) -> some View {
         VStack {
@@ -243,7 +433,7 @@ struct ProductDetailView: View {
             
                 Spacer ()
             
-                //button to close popover
+                // button to close popover
                 Button  (action: {
                    showingReviews.toggle()
                 }, label: {
@@ -251,16 +441,32 @@ struct ProductDetailView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 25, height: 25)
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(Color("supple"))
                 })
                 .padding([.top, .trailing])
     
             }
             
-            //displaying all reviews
+            // displaying all reviews
             ScrollView(.vertical, showsIndicators: false) {
+                // checking if there are any reviews at all
+                if listReviews.isEmpty {
+                    VStack {
+                        Text("No reviews yet")
+                            .font(.custom(customFont, size: 20))
+                            .fontWeight(.semibold)
+
+                        Text("Please add your own review for this product by clicking the Review button.")
+                            .font(.custom(customFont, size: 18))
+                            .foregroundColor(.gray)
+                            .padding(.horizontal)
+                            .padding(.top, 10)
+                            .multilineTextAlignment(.center)
+                    }
+                } else {
+                    // displaying all reviews
                     VStack(spacing: 15) {
-                        ForEach(product.reviews) { review in
+                        ForEach(listReviews) { review in
                             HStack (spacing: 0) {
                                 ReviewCardView(review: review)
                             }
@@ -268,6 +474,7 @@ struct ProductDetailView: View {
                     }
                     .padding(.top, 25)
                     .padding(.horizontal)
+                }
             }
             .padding()
         }
@@ -288,15 +495,12 @@ struct ProductDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("off_white"))
         .cornerRadius(20)
-        
     }
 }
 
 
 struct ProductDetailView_Previews: PreviewProvider {
     static var previews: some View {
-//        ProductDetailView(product: StoreViewModel().products[0])
-//            .environmentObject(SharedDataModel())
         MainPage()
     }
 }

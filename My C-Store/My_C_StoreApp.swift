@@ -11,7 +11,7 @@ struct My_C_StoreApp: App {
     
     init() {
         print("Configuring Parse...")
-        //Prepare Parse configuration
+        // Prepare Parse configuration
         let parseConfig = ParseClientConfiguration {
             $0.applicationId = "7qenCQe4LFIIfcQEV3KqW1xbbCbusakp6QsCeOwB"
             $0.clientKey = "Um2Uo5NsYG5CCpjKDPTKWlPtGDS47Q0pt5Rq8mrf"

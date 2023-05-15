@@ -4,25 +4,21 @@ import Parse
 import ParseSwift
 
 class SharedDataModel: ObservableObject {
-    //Detail Product Data
+    // Detail Product Data
     @Published var detailProduct: Product?
     @Published var showDetailProduct: Bool = false
     
-    //matched with search string
+    // matched with search string
     @Published var searchMatch: Bool = false
     
-    //for Wishlist Page
-    
-    //Wishlist products
+    // Wishlist
     @Published var favProducts: [Product] = []
     
-    //for Cart Page
-    
-    //Cart products
+    // Cart
     @Published var cartTotal: Double = 0.0
     @Published var cartProducts: [Product] = []
     
-    //Calculate total price
+    // Calculate total price
     func getTotal() -> Double {
         var cartTotal: Double = 0.0
         
@@ -38,15 +34,33 @@ class SharedDataModel: ObservableObject {
         return cartTotal
     }
     
-    //for Store Page
-    @Published var products: [Product] = [
-        Product(name: "Caesar chicken wrap", price: 6.50, image: "chicken_wrap", quantity: 0, rating: 4, reviews: [Review(content: "This is Caesar chicken wrap"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday"), Review(content: "This is a very long long long long long looooooooooooooooooooooooooooooooooooooooong long long long long long review just to test")]),
-        Product(name: "Oatly milk", price: 8.00, image: "oatly_milk", quantity: 0, rating: 3, reviews: [Review(content: "This is Oatly milk"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday")]),
-        Product(name: "Pringles", price: 3.75, image: "pringles", quantity: 0, rating: 5, reviews: [Review(content: "This is Pringles"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday")]),
-        Product(name: "Grapes", price: 7.95, image: "grapes", quantity: 0, rating: 4, reviews: [Review(content: "This is Grapes"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday")]),
-        Product(name: "Yakisoba beef flavor", price: 2.50, image: "yakisoba", quantity: 0, rating: 2, reviews: [Review(content: "This is noodle"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday")]),
-        Product(name: "Kikkoman soy sauce", price: 12.50, image: "soy_sauce", quantity: 0, rating: 5, reviews: [Review(content: "This is soy sauce"), Review(content: "This is awesome"), Review(content: "I have this for lunch everyday")])
-    ]
+    // Store products
+    @Published var products: [Product] = []
+    
+    func parseProducts(){
+        let query = PFQuery(className:"Product")
+        query.findObjectsInBackground { (products, error) in
+            if let products = products {
+                print("Successfully retrieved \(products.count) products.")
+                for product in products {
+                    let imageFile = product["image"] as! PFFileObject
+                    let urlString = imageFile.url!
+                        
+                    let retrievedProduct = Product(
+                        name: product["name"] as? String ?? "",
+                        price: product["price"] as? Double ?? 0.0,
+                        image: urlString,
+                        rating: product["rating"] as? Double ?? 0.0
+                    )
+                    self.products.append(retrievedProduct)
+                }
+                print("These are my products")
+                print(self.products)
+            } else {
+                print(error?.localizedDescription)
+            }
+        }
+    }
     
     @Published var searchText: String = ""
     @Published var searchActivated: Bool = false
@@ -64,6 +78,7 @@ class SharedDataModel: ObservableObject {
                     self.searchedProducts = nil
                 }
             })
+        parseProducts()
         parseOrders()
     }
     
@@ -82,18 +97,16 @@ class SharedDataModel: ObservableObject {
         }
     }
     
-    //for Orders Page
-    
+    // for Orders Page
     @Published var myOrders: [Order] = []
     
     func parseOrders(){
-        myOrders = []
+        self.myOrders = []
         let query = PFQuery(className:"Order")
         query.whereKey("userId", equalTo: PFUser.current()?.objectId)
         query.findObjectsInBackground { (orders, error) in
             if let orders = orders {
                 print("Successfully retrieved \(orders.count) orders.")
-                print(orders[0])
                 for order in orders {
                     
                     let retrievedOrder = Order(
@@ -117,6 +130,4 @@ class SharedDataModel: ObservableObject {
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: date)
     }
-    //TODO: implement this function
-//    func parseProducts() -> [Product]{}
 }

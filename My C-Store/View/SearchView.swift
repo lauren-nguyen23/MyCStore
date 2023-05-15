@@ -6,15 +6,15 @@ struct SearchView: View {
     
     @EnvironmentObject var sharedData: SharedDataModel
     
-    //Activating Text Field
+    // Activating Text Field
     @FocusState var startIF: Bool
     
     var body: some View {
         VStack(spacing: 0) {
-            //search bar
+            
             HStack(spacing: 20) {
                 
-                //Close button
+                // Close button
                 Button {
                     withAnimation{
                         sharedData.searchActivated = false
@@ -26,7 +26,7 @@ struct SearchView: View {
                         .foregroundColor(.black.opacity(0.7))
                 }
                 
-                //Search bar
+                // Search bar
                 HStack(spacing: 15){
                         
                         Image(systemName: "magnifyingglass").font(.body)
@@ -49,26 +49,26 @@ struct SearchView: View {
                     
             }
             
-            //showing progress if searching, else showing no results found if empty
+            // showing progress if searching, else showing no results found if empty
             if let products = sharedData.searchedProducts{
                 if products.isEmpty {
-                    //No Results Found Text
+                    // No Results Found Text
                     VStack(spacing: 10) {
                         Text("Item not found")
                             .font(.custom(customFont, size: 22).bold())
                     }
                     .padding()
                 } else {
-                    //filter results
+                    // filter results
                     
                         VStack(spacing: 0) {
                             
-                            //Found ... results text
+                            // Found ... results text
                             Text("Found \(products.count)" + " results")
                                 .font(.custom(customFont, size: 24).bold())
                                 .padding(.vertical)
                             ScrollView(.vertical, showsIndicators: false){
-                                //staggered grid
+                                // staggered grid
                                 StaggeredGrid(columns: 2, spacing: 5, list: products) { product in
                                     ProductTileView(product: product)
                                 }
@@ -121,7 +121,7 @@ struct SearchView: View {
                 .cornerRadius(25)
                 .frame(width: 154, height: 160)
         )
-        //TODO: when tapped, show the ProductDetailPage
+        // when tapped, show the ProductDetailView
         .onTapGesture {
             withAnimation(.easeInOut) {
                 sharedData.detailProduct = product
@@ -133,9 +133,6 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        //SearchView(animation: animation)
-//        SearchView()
-//            .environmentObject(StoreViewModel())
         MainPage()
     }
 }
